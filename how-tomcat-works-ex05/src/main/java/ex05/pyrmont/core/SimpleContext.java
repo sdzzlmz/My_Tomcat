@@ -12,6 +12,9 @@ import org.apache.catalina.Cluster;
 import org.apache.catalina.Container;
 import org.apache.catalina.ContainerListener;
 import org.apache.catalina.Context;
+import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Loader;
 import org.apache.catalina.Logger;
 import org.apache.catalina.Manager;
@@ -35,12 +38,9 @@ import org.apache.catalina.deploy.LoginConfig;
 import org.apache.catalina.deploy.NamingResources;
 import org.apache.catalina.deploy.SecurityConstraint;
 import org.apache.catalina.util.CharsetMapper;
+import org.apache.catalina.util.LifecycleSupport;
 
-public class SimpleContext implements Context, Pipeline {
-
-  public SimpleContext() {
-    pipeline.setBasic(new SimpleContextValve());
-  }
+public class SimpleContext implements Context, Pipeline, Lifecycle {
 
   protected HashMap children = new HashMap();
   protected Loader loader = null;
@@ -49,9 +49,84 @@ public class SimpleContext implements Context, Pipeline {
   protected Mapper mapper = null;
   protected HashMap mappers = new HashMap();
   private Container parent = null;
+  protected LifecycleSupport lifecycle = new LifecycleSupport(this);
+  private boolean started = false;
+  public SimpleContext() {
+	    pipeline.setBasic(new SimpleContextValve());
+  }
+  public void addLifecycleListener(LifecycleListener listener) {
+	// TODO Auto-generated method stub
+	  if(listener != null)
+		  lifecycle.addLifecycleListener(listener);
+  }
 
+  public LifecycleListener[] findLifecycleListeners() {
+		// TODO Auto-generated method stub
+		return null;
+  }
+	
+  public void removeLifecycleListener(LifecycleListener listener) {
+		// TODO Auto-generated method stub
+		lifecycle.removeLifecycleListener(listener);
+  }
+	
+  public synchronized void start() throws LifecycleException {
+		// TODO Auto-generated method stub
+	  if(started) { 
+		  throw new LifecycleException("SimpleContext has already started!");
+	  }
+	  lifecycle.fireLifecycleEvent(BEFORE_START_EVENT, null);
+	  started = true;
+	  try {
+		  if((loader != null) && (loader instanceof Lifecycle)) {
+			  ((Lifecycle)loader).start();
+		  }
+		  Container children[] = findChildren();
+		  for (int i = 0; i < children.length; i++) {
+			  if(children[i] instanceof Lifecycle)
+				  ((Lifecycle)children[i]).start();
+		  }
+		  if (pipeline instanceof Lifecycle) { 
+			  ((Lifecycle)pipeline).start();
+		  }
+		  lifecycle.fireLifecycleEvent(START_EVENT, null);
+		
+	} catch (Exception e) {
+		// TODO: handle exception
+	}
+	lifecycle.fireLifecycleEvent(AFTER_START_EVENT, null);
+  }
+	
+  public void stop() throws LifecycleException {
+		// TODO Auto-generated method stub
+	  if(!started) {
+		  throw new LifecycleException("SimpleContext has not been started");
+	  }
+	  lifecycle.fireLifecycleEvent(BEFORE_STOP_EVENT, null);
+	  lifecycle.fireLifecycleEvent(STOP_EVENT, null);
+	  started = false;
+	  try {
+		  if((loader != null) && (loader instanceof Lifecycle)) {
+			  ((Lifecycle)loader).stop();
+		  }
+		  Container children[] = findChildren();
+		  for (int i = 0; i < children.length; i++) {
+			  if(children[i] instanceof Lifecycle)
+				  ((Lifecycle)children[i]).stop();
+		  }
+		  if (pipeline instanceof Lifecycle) { 
+			  ((Lifecycle)pipeline).stop();
+		  }
+		  lifecycle.fireLifecycleEvent(STOP_EVENT, null);
+		
+	} catch (Exception e) {
+		// TODO: handle exception
+	}
+	lifecycle.fireLifecycleEvent(AFTER_START_EVENT, null);
+  }
+	
   public Object[] getApplicationListeners() {
-    return null;
+	    return null;
   }
 
   public void setApplicationListeners(Object listeners[]) {

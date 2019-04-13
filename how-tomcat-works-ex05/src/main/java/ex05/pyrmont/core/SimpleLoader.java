@@ -9,10 +9,39 @@ import java.net.URLStreamHandler;
 import org.apache.catalina.Container;
 import org.apache.catalina.Loader;
 import org.apache.catalina.DefaultContext;
+import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.LifecycleListener;
 
-public class SimpleLoader implements Loader {
+public class SimpleLoader implements Loader, Lifecycle {
 
-  public static final String WEB_ROOT =
+  public void addLifecycleListener(LifecycleListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public LifecycleListener[] findLifecycleListeners() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void removeLifecycleListener(LifecycleListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public synchronized void start() throws LifecycleException {
+		// TODO Auto-generated method stub
+		System.out.println("Starting SimpleLoader");
+		
+	}
+
+	public void stop() throws LifecycleException {
+		// TODO Auto-generated method stub
+		
+	}
+
+public static final String WEB_ROOT =
     System.getProperty("user.dir") + File.separator  + "webroot";
 
   ClassLoader classLoader = null;

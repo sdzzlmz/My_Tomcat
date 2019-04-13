@@ -4,15 +4,43 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import org.apache.catalina.Contained;
 import org.apache.catalina.Container;
+import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Pipeline;
 import org.apache.catalina.Request;
 import org.apache.catalina.Response;
 import org.apache.catalina.Valve;
 import org.apache.catalina.ValveContext;
 
-public class SimplePipeline implements Pipeline {
+public class SimplePipeline implements Pipeline, Lifecycle {
 
-  public SimplePipeline(Container container) {
+  public void addLifecycleListener(LifecycleListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public LifecycleListener[] findLifecycleListeners() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void removeLifecycleListener(LifecycleListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public synchronized void start() throws LifecycleException {
+		// TODO Auto-generated method stub
+		System.out.println("Starting SimplePipeline!");
+	}
+
+	public void stop() throws LifecycleException {
+		// TODO Auto-generated method stub
+		
+	}
+
+public SimplePipeline(Container container) {
     setContainer(container);
   }
 

@@ -11,6 +11,9 @@ import org.apache.catalina.Cluster;
 import org.apache.catalina.Container;
 import org.apache.catalina.ContainerListener;
 import org.apache.catalina.InstanceListener;
+import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Loader;
 import org.apache.catalina.Logger;
 import org.apache.catalina.Manager;
@@ -21,10 +24,11 @@ import org.apache.catalina.Request;
 import org.apache.catalina.Response;
 import org.apache.catalina.Valve;
 import org.apache.catalina.Wrapper;
+import org.apache.catalina.util.LifecycleSupport;
 
 
 
-public class SimpleWrapper implements Wrapper, Pipeline {
+public class SimpleWrapper implements Wrapper, Pipeline, Lifecycle {
 
   // the servlet instance
   private Servlet instance = null;
@@ -33,10 +37,55 @@ public class SimpleWrapper implements Wrapper, Pipeline {
   private String name;
   private SimplePipeline pipeline = new SimplePipeline(this);
   protected Container parent = null;
+  protected boolean started = false;
+  protected LifecycleSupport lifecycle = new LifecycleSupport(this);
+  
+  public void addLifecycleListener(LifecycleListener listener) {
+	// TODO Auto-generated method stub
+	
+	}
+	
+	public LifecycleListener[] findLifecycleListeners() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public void removeLifecycleListener(LifecycleListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public synchronized void start() throws LifecycleException {
+		// TODO Auto-generated method stub
+		System.out.println("Starting Wrapper" + name);
+	    if (started)
+	        throw new LifecycleException("Wrapper already started");
 
-  public SimpleWrapper() {
-    pipeline.setBasic(new SimpleWrapperValve());
-  }
+	      // Notify our interested LifecycleListeners
+	      lifecycle.fireLifecycleEvent(BEFORE_START_EVENT, null);
+	      started = true;
+
+	      // Start our subordinate components, if any
+	      if ((loader != null) && (loader instanceof Lifecycle))
+	        ((Lifecycle) loader).start();
+
+	      // Start the Valves in our pipeline (including the basic), if any
+	      if (pipeline instanceof Lifecycle)
+	        ((Lifecycle) pipeline).start();
+
+	      // Notify our interested LifecycleListeners
+	      lifecycle.fireLifecycleEvent(START_EVENT, null);
+	      // Notify our interested LifecycleListeners
+	      lifecycle.fireLifecycleEvent(AFTER_START_EVENT, null);
+	}	
+	public void stop() throws LifecycleException {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public SimpleWrapper() {
+	    pipeline.setBasic(new SimpleWrapperValve());
+	  }
 
   public synchronized void addValve(Valve valve) {
     pipeline.addValve(valve);
