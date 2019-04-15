@@ -32,7 +32,6 @@ public class SimplePipeline implements Pipeline, Lifecycle {
 
 	public synchronized void start() throws LifecycleException {
 		// TODO Auto-generated method stub
-		System.out.println("Starting SimplePipeline!");
 	}
 
 	public void stop() throws LifecycleException {

@@ -87,7 +87,7 @@ public class HttpProcessor {
 	 * @exception ServletException
 	 *                if a parsing error occurs
 	 */
-	private void parseHeaders(SocketInputStream input) throws IOException,
+	private void parseHeaders(@SuppressWarnings("deprecation") SocketInputStream input) throws IOException,
 			ServletException {
 		while (true) {
 			HttpHeader header = new HttpHeader();
@@ -137,6 +137,7 @@ public class HttpProcessor {
 		} // end while
 	}
 
+	@SuppressWarnings("deprecation")
 	private void parseRequest(SocketInputStream input, OutputStream output)
 			throws IOException, ServletException {
 

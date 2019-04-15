@@ -566,7 +566,7 @@ public class WebappClassLoader
      * @exception IllegalArgumentException if the specified repository is
      *  invalid or does not exist
      */
-    synchronized void addRepository(String repository, File file) {
+    public synchronized void addRepository(String repository, File file) {
 
         // Note : There should be only one (of course), but I think we should
         // keep this a bit generic
@@ -598,7 +598,7 @@ public class WebappClassLoader
     }
 
 
-    synchronized void addJar(String jar, JarFile jarFile, File file)
+    public synchronized void addJar(String jar, JarFile jarFile, File file)
         throws IOException {
 
         if (jar == null)
